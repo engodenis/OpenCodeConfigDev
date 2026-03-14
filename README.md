@@ -16,6 +16,32 @@ Bu eğitim serisi,OpenCode ve oh-my-openagent'i profesyonel seviyede kullanmanı
 
 ---
 
+## 📥 Kurulum
+
+### İnsanlar İçin
+
+Bu komutu LLM ajanınıza (Claude Code, AmpCode, Cursor, vb.) yapıştırın:
+
+```
+oh-my-opencode kurulumu için şu talimatları takip et:
+https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/refs/heads/dev/docs/guide/installation.md
+
+Veya detaylı kurulum rehberini okuyun: setup/INSTALLATION-GUIDE.md
+Ama ciddi, bir ajana yaptırın. İnsanlar config'leri eliyle mahveder.
+```
+
+### LLM Ajanları İçin
+
+Kurulum rehberini indir ve takip et:
+
+```bash
+curl -s https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/refs/heads/dev/docs/guide/installation.md
+```
+
+Detaylı rehber için: [`setup/INSTALLATION-GUIDE.md`](setup/INSTALLATION-GUIDE.md)
+
+---
+
 ## 📖 Kısa Özet
 
 ### BÖLÜM 1: Konfigürasyon
