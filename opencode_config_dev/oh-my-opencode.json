@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "oracle": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high"
+    },
+    "librarian": {
+      "model": "opencode/glm-4.7-free"
+    },
+    "explore": {
+      "model": "opencode/gpt-5-nano"
+    },
+    "multimodal-looker": {
+      "model": "google/gemini-3-flash-preview"
+    },
+    "prometheus": {
+      "model": "google/gemini-3.1-pro-preview"
+    },
+    "metis": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high"
+    },
+    "momus": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high"
+    },
+    "atlas": {
+      "model": "google/gemini-3.1-pro-preview"
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high"
+    },
+    "ultrabrain": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high"
+    },
+    "artistry": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high"
+    },
+    "quick": {
+      "model": "google/gemini-3-flash-preview"
+    },
+    "unspecified-low": {
+      "model": "google/gemini-3-flash-preview"
+    },
+    "unspecified-high": {
+      "model": "google/gemini-3-flash-preview"
+    },
+    "writing": {
+      "model": "google/gemini-3-flash-preview"
+    }
+  }
+}

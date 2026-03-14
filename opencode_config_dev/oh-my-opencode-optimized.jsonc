@@ -1,0 +1,493 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 1: AJAN YAPILANDIRMALARI
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // HER AJAN FARKLI BİR "KİŞİLİK" VE UZMANLIK ALANINA SAHİPTİR
+  // Model seçimi, ajanın "karakterine" uygun olmalıdır
+  
+  "agents": {
+    // ─────────────────────────────────────────────────────────────────────────────
+    // SISYPHUS: Ana Orkestratör (Proje Yöneticisi)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: İletişimci, talimat takipçisi, delegasyon ustası
+    // GÖREVLER: Planlama, görev dağıtma, ilerleme takibi, %100 bitirme garantisi
+    // NEDEN BU MODEL?: 1100+ satır prompt takibi gerektirir → Claude/Kimi/GLM ailesi
+    
+    "sisyphus": {
+      // TERCİH: Claude Opus 4.6 (en iyi prompt takibi)
+      // ALTERNATİF: Kimi K2.5 veya GLM-5 (Claude benzeri davranış)
+      // NOT: GPT-5.4 için ayrı prompt yolu var ama önerilmez
+      
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",  // Derin düşünme modu
+      
+      // Ultrawork modu için ayrı model (daha güçlü)
+      "ultrawork": {
+        "model": "google/gemini-3.1-pro-preview",
+        "variant": "max"  // Maksimum düşünme budget'i
+      },
+      
+      // Sıcaklık: Düşük = tutarlı, Yüksek = yaratıcı
+      // Sisyphus için tutarlılık kritik
+      "temperature": 0.1,
+      
+      // Prompt eki: Orkestrasyon için özel talimatlar
+      "prompt_append": "You are the conductor of an AI development team. Coordinate efficiently, delegate strategically, and ensure every task reaches 100% completion."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // HEPHAESTUS: Otonom Derin İşçi (Kalfa)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Derin düşünen, otonom çalışan, minimal rehberlik ister
+    // GÖREVLER: Karmaşık mimari işler, derin debugging, cross-file değişiklikler
+    // NEDEN BU MODEL?: GPT-5.3 Codex prensip odaklı çalışır → hedef ver, yapar
+    
+    "hephaestus": {
+      // ZORUNSUZ: Hephaestus GPT-5.3 Codex gerektirir
+      // NEDEN?: Claude bunu yapamaz - o iletişimcidir, otonom değildir
+      "model": "openai/gpt-5.3-codex",
+      "variant": "medium",
+      "temperature": 0.1,
+      
+      // Fallback: GitHub Copilot üzerinden GPT-5.4
+      "fallback_models": ["openai/gpt-5.4"],
+      
+      "prompt_append": "You are an autonomous deep worker. Given a goal, explore the codebase thoroughly, research patterns, and execute end-to-end. Think in principles, not recipes."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ORACLE: Salt Okunur Danışman (Kıdemli Mimari)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Derin akıl yürütme, mimari vizyon, detaylı analiz
+    // GÖREVLER: Mimari kararlar, kod review, complex debugging
+    // KISITLAMA: Salt okunur - kod yazamaz, düzenleyemez
+    
+    "oracle": {
+      // GPT-5.4 yüksek akıl yürütme kapasitesi
+      // ALTERNATİF: Gemini 3.1 Pro veya Claude Opus
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      
+      // Salt okunur ajan - yazma araçları devre dışı
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      },
+      
+      "prompt_append": "You are a read-only architecture consultant. Analyze deeply, provide reasoning, but never make changes directly."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // PROMETHEUS: Stratejik Planlayıcı (Analist)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Sorgulayan, detaycı, kapsam belirleme ustası
+    // GÖREVLER: Mülakat modu, plan yazma, belirsizlik giderme
+    // ÖZELLİK: READ-ONLY - sadece .sisyphus/plans/ dizinine yazabilir
+    
+    "prometheus": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.2,  // Biraz daha yaratıcı - planlama için
+      
+      // Prompt eki: Planlama stratejisi
+      "prompt_append": "You are a strategic planner. Interview the user like a senior engineer. Identify scope, ambiguities, and edge cases. Build detailed, verifiable plans."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // METIS: Plan Boşluk Analisti (Detektif)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Kaçırılan detayları bulur, örtük varsayımları ortaya çıkarır
+    // GÖREVLER: Prometheus'un kaçırdıklarını yakalamak, AI-slop tespiti
+    
+    "metis": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.15,
+      
+      "prompt_append": "You are a gap analyzer. Find what the planner missed. Identify hidden assumptions, ambiguities, and potential AI over-engineering."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // MOMUS: Acımasız Plan Revizyoncusu (Kalite Kontrol)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Açıkgöz, detaycı, hiçbir şeyi geçmez
+    // GÖREVLER: Plan kalitesi kontrolü, DOĞRULANABİLİRLİK kriteri
+    
+    "momus": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.1,  // Çok tutarlı olmalı
+      
+      "prompt_append": "You are a ruthless plan reviewer. Check: clarity, verifiability, context sufficiency, big picture clarity. Only approve when 100% ready."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ATLAS: Todo Orkestratörü (İcra Takipçisi)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Sistemli, organize, doğrulama odaklı
+    // GÖREVLER: Planı aşama aşama yürütme, wisdom accumulation
+    
+    "atlas": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "medium",  // Orta seviye düşünme yeterli
+      "temperature": 0.1,
+      
+      "prompt_append": "You are a task conductor. Execute Prometheus plans systematically. Accumulate wisdom across tasks. Verify completion independently."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // LIBRARIAN: Dokümantasyon ve OSS Arama Uzmanı
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Hızlı, kapsamlı, evidence-based
+    // GÖREVLER: Dokümantasyon bulma, OSS pattern arama, API dokümantasyonu
+    
+    "librarian": {
+      // HIZ ve MALİYET öncelikli - derin düşünme gerektirmez
+      "model": "opencode/glm-4.7-free",  // Ücretsiz ve hızlı
+      "temperature": 0.3,  // Biraz yaratıcı arama
+      
+      // Salt okunur ajan
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      }
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // EXPLORE: Kod Tabanı Pattern Keşfi
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Ultra hızlı, pattern odaklı
+    // GÖREVLER: Kod tabanında anlamsal arama, pattern discovery
+    
+    "explore": {
+      // EN HIZLI model - kod grep için akıl gerektirmez
+      "model": "opencode/gpt-5-nano",  // En ucuz ve en hızlı
+      "temperature": 0.2,
+      
+      "permission": {
+        "edit": "deny",
+        "write": "deny"
+      },
+      
+      "prompt_append": "You are a fast codebase explorer. Find patterns, discover implementations, identify conventions. Speed is everything."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // MULTIMODAL-LOOKER: Görsel İçerik Analiz Uzmanı
+    // ─────────────────────────────────────────────────────────────────────────────
+    // KARAKTER: Görsel analiz, PDF/image understanding
+    // GÖREVLER: DIYagram okuma, PDF analizi, ekran görüntüsü inceleme
+    
+    "multimodal-looker": {
+      // Vizyon-capable model gerektirir
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.3,
+      
+      // Salt okunur - sadece look_at tool'u
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      }
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 2: KATEGORİ YAPILANDIRMALARI
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // KATEGORİ = İŞ TÜRÜNE GÖRE OTOMATİK MODEL SEÇİMİ
+  // Sisyphus model adı DEĞİL, kategori seçer → sistem en uygun modeli atar
+  
+  "categories": {
+    // ─────────────────────────────────────────────────────────────────────────────
+    // VISUAL-ENGINEERING: Frontend, UI/UX, Tasarım
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: CSS, React bileşenleri, animasyon, tasarım workları
+    // NEDEN GEMINI?: Gemini görsel işlerde en iyi performansı gösterir
+    
+    "visual-engineering": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.7,  // Tasarımda yaratıcılık önemli
+      
+      "prompt_append": "You are a designer-turned-developer. Craft stunning UI/UX. Think about aesthetics, accessibility, motion, and user experience. No generic designs."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ULTRABRAIN: Derin Mantıksal Akıl Yürütme
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Karmaşık algoritmalar, mimari kararlar, optimization problemi
+    // NEDEN GPT-5.4 XHIGH?: En derin akıl yürütme kapasitesi
+    
+    "ultrabrain": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.1,  // Mantıkta tutarlılık kritik
+      
+      // Extended thinking için daha yüksek budget
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      },
+      
+      "prompt_append": "You are a strategic thinker. Apply deep logical reasoning. Consider edge cases, trade-offs, and long-term implications. Be thorough."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // DEEP: Otonom Problem Çözme
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Hedef-ver → yap, derin araştırma gerektiren işler
+    // NEDEN CODEX?: Otonom çalışma, minimal hand-holding
+    
+    "deep": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "medium",
+      "temperature": 0.2,
+      
+      "prompt_append": "You are an autonomous problem solver. Research thoroughly before action. Understand the codebase deeply. Execute end-to-end."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ARTISTRY: Yaratıcı ve Özgün Yaklaşımlar
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Yaratıcı çözümler, özgün fikirler, non-standard patterns
+    // NEDEN GEMINI HIGH?: Yaratıcılıkta iyi performans
+    
+    "artistry": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.8,  // Yüksek sıcaklık = daha yaratıcı
+      
+      "prompt_append": "You are a creative architect. Think outside conventional patterns. Propose novel approaches. Embrace unconventional solutions."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // QUICK: Basit ve Hızlı İşler
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Tek dosya değişikliği, typo düzeltme, basit modifikasyonlar
+    // NEDEN FLASH/HAIKU/NANO?: Hız ve maliyet
+    
+    "quick": {
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.2,
+      
+      "prompt_append": "You are a quick fix specialist. Single-file changes, typos, simple modifications. Be fast and precise."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // UNSPECIFIED-LOW: Genel Düşük Çaba İşler
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Kategoriye uymayan işler, düşük çaba
+    
+    "unspecified-low": {
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.3
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // UNSPECIFIED-HIGH: Genel Yüksek Çaba İşler
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Kategoriye uymayan işler, yüksek çaba
+    // DİKKAT: Burada daha güçlü model gerekebilir
+    
+    "unspecified-high": {
+      "model": "google/gemini-3.1-pro-preview",  // Flash'tan Pro'ya yükselttim
+      "variant": "medium",
+      "temperature": 0.2
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // WRITING: Dokümantasyon ve Yazı
+    // ─────────────────────────────────────────────────────────────────────────────
+    // NE ZAMAN: Dokümantasyon, README, prose
+    
+    "writing": {
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.5,  // Yazıda biraz akıcılık
+      
+      "prompt_append": "You are a technical writer. Clear, concise, well-structured documentation. Think about the reader."
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // ÖRNEK ÖZEL KATEGORİ: Git İşlemleri
+    // ─────────────────────────────────────────────────────────────────────────────
+    
+    "git": {
+      "model": "opencode/gpt-5-nano",
+      "temperature": 0.1,
+      "description": "All git operations - commits, rebases, merges",
+      "prompt_append": "Atomic commits, clear messages, safe operations. Follow the repository's commit convention."
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 3: ARKA PLAN GÖREV YAPILANDIRMASI
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // PARALEL GÖREV YÜRÜTME İÇİN LİMİTLER
+  
+  "background_task": {
+    // Varsayılan eşzamanlılık
+    "defaultConcurrency": 10,  // Toplam max paralel görev
+    
+    // Görev zaman aşımı (ms)
+    "staleTimeoutMs": 180000,  // 3 dakika aktivitesizlik = sonlandır
+    
+    // Sağlayıcı bazlı limitler
+    // ANLAM: Anthropic için max 3 paralel, OpenAI için max 5, vb.
+    "providerConcurrency": {
+      "anthropic": 3,   // Claude API limiti düşük
+      "openai": 5,      // GPT API daha esnek
+      "google": 10,     // Gemini limiti yüksek
+      "opencode": 15,   // Ücretsiz modeller için yüksek
+      "kimi-for-coding": 5,
+      "zai-coding-plan": 10
+    },
+    
+    // Model bazlı limitler (provider limitlerini ezer)
+    "modelConcurrency": {
+      "anthropic/claude-opus-4-6": 2,  // En pahalı model - düşük limit
+      "openai/gpt-5.4": 3,
+      "google/gemini-3.1-pro-preview": 5,
+      "opencode/gpt-5-nano": 20,  // En ucuz - yüksek limit
+      "opencode/glm-4.7-free": 30  // Ücretsiz - sınırsız gibi
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 4: SİSYPHUS AJAN AYARLARI
+  // ═══════════════════════════════════════════════════════════════════════════════
+  
+  "sisyphus_agent": {
+    "disabled": false,           // Sisyphus aktif
+    "default_builder_enabled": false,  // OpenCode-Builder kapalı (Sisyphus-Junior yeterli)
+    "planner_enabled": true,     // Prometheus aktif
+    "replace_plan": true         // Varsayılan plan ajanını Prometheus ile değiştir
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 5: DENEYSEL ÖZELLİKLER
+  // ═══════════════════════════════════════════════════════════════════════════════
+  
+  "experimental": {
+    // Bağlam penceresi yönetimi
+    "truncate_all_tool_outputs": false,
+    "aggressive_truncation": true,
+    "auto_resume": true,
+    "disable_omo_env": false,  // Zaman/dil bilgisi tutulsun
+    
+    // Task sistemi (Sisyphus tasks)
+    "task_system": true,
+    
+    // Dinamik bağlam budaması
+    "dynamic_context_pruning": {
+      "enabled": true,
+      "notification": "detailed",
+      "turn_protection": {
+        "enabled": true,
+        "turns": 3
+      },
+      "protected_tools": [
+        "task",
+        "todowrite",
+        "session_read",
+        "session_write",
+        "session_search"
+      ],
+      "strategies": {
+        "deduplication": { "enabled": true },
+        "supersede_writes": { "enabled": true, "aggressive": false },
+        "purge_errors": { "enabled": true, "turns": 5 }
+      }
+    }
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 6: HOOK YAPILANDIRMASI
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // Hook'lar = Yaşam döngüsü olaylarına müdahale noktaları
+  
+  "disabled_hooks": [
+    // AÇIKLAMA: Kullanmak istemediğiniz hook'ları buraya ekleyin
+    
+    // "gpt-permission-continuation",  // GPT otomatik devamını kapat
+    // "comment-checker",              // AI yorum kontrolünü kapat
+    // "startup-toast"                 // Başlangıç bildirimini kapat
+  ],
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 7: RUNTIME FALLBACK (ÇALIŞMA ZAMANI YEDEKLEME)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // API HATASI DURUMUNDA OTOMATİK MODEL DEĞİŞİMİ
+  
+  "runtime_fallback": {
+    "enabled": true,
+    "retry_on_errors": [400, 429, 503, 529],  // Bu hata kodlarında fallback
+    "max_fallback_attempts": 3,               // Max 3 deneme
+    "cooldown_seconds": 60,                   // Başarısız modeli 60 sn gevşet
+    "timeout_seconds": 30,                    // 30 sn zaman aşımı
+    "notify_on_fallback": true                // Model değişiminde bildirim
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 8: HASHLINE EDIT (GÜVENLİ DÜZENLEME)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  
+  "hashline_edit": true,  // HASH ANCHOR'LAMA AKTİF
+  // AÇIKLAMA: Edit tool'u LINE#ID formatı içerir:
+  //   10#ABC| function hello() {
+  // ABC hash'i dosya değişmediyse düzenlemeyi reddeder
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 9: MCP SERVERS (MODEL CONTEXT PROTOCOL)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // DİKKAT: Built-in MCP'ler varsayılan olarak aktif
+  // - websearch (Exa AI)
+  // - context7 (Library docs)
+  // - grep_app (GitHub code search)
+  
+  "disabled_mcps": [
+    // Kullanmak istemediğiniz MCP'ler
+    // "websearch",    // Web aramasını kapat
+    // "context7",     // Dokümantasyon aramasını kapat
+    // "grep_app"      // GitHub aramasını kapat
+  ],
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 10: BRAIN AUTOMATION ENGINE
+  // ═══════════════════════════════════════════════════════════════════════════════
+  
+  "browser_automation_engine": {
+    "provider": "playwright"  // veya "agent-browser"
+  },
+
+  // TMux Entegrasyonu (terminal panelleri)
+  "tmux": {
+    "enabled": false,  // Arka plan ajanları panellerde görmek için true
+    "layout": "main-vertical",
+    "main_pane_size": 60
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // BÖLÜM 11: GELİŞMİŞ ÖZELLİKLER
+  // ═══════════════════════════════════════════════════════════════════════════════
+  
+  // Git Master Skill Ayarları
+  "git_master": {
+    "commit_footer": true,          // Commit'lerin sonuna metadata ekle
+    "include_co_authored_by": true  // Co-author bilgisi ekle
+  },
+
+  // Yorum Kalite Kontrolü
+  "comment_checker": {
+    "custom_prompt": "Review these comments for AI slop. Remove fluff, keep substance. Comments should read like a senior engineer wrote them.\n\nComments to check:\n{{comments}}"
+  },
+
+  // Bildirimler
+  "notification": {
+    "force_enable": false  // Harici bildirim eklentisi varsa true yap
+  }
+}
