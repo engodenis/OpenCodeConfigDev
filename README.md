@@ -130,6 +130,8 @@ D:\Projects\OpenCodeDev\
 │   ├── oh-my-opencode.json              # Mevcut config
 │   ├── oh-my-opencode-optimized.jsonc   # Optimize edilmiş config
 │   └── package.json
+├── setup/
+│   └── INSTALLATION-GUIDE.md           # Kurulum rehberi ( yeni başlayanlar için)
 ├── docs/
 │   ├── 01-Configuration-Guide.md        # Konfigürasyon rehberi
 │   ├── 02-Agent-Usage-Guide.md          # Ajan kullanım rehberi
