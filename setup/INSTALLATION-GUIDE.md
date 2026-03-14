@@ -5,170 +5,29 @@
 > OpenCode'a bu rehberi vermek için şu komutu yapıştırın:
 > ```
 > OpenCode kurulu ancak oh-my-openagent eklentisi yok. Aşağıdaki kurulum rehberini sırasıyla uygula:
-> 1. Gerekli tool'ları kontrol et (git, bun/node)
-> 2. oh-my-openagent kurulumunu gerçekleştir
-> 3. https://github.com/engodenis/OpenCodeConfigDev.git reposunu fork et ve clone et
-> 4. Konfigürasyon dosyalarını doğru konuma yerleştir
+> 1. oh-my-openagent kurulumunu gerçekleştir (resmi dokümantasyonu takip et)
+> 2. https://github.com/engodenis/OpenCodeConfigDev.git reposunu fork et ve clone et
+> 3. Konfigürasyon dosyalarını doğru konuma yerleştir
 > ```
-
----
-
-## 📋 Kurulum Öncesi Kontroller
-
-### Gerekli Tool'lar
-
-| Tool | Gereklilik | Kontrol Komutu |
-|------|------------|----------------|
-| **Git** | Zorunlu | `git --version` |
-| **Bun** veya **Node.js** | Zorunlu (biri) | `bun --version` veya `node --version` |
-| **OpenCode** | Zorunlu | `opencode --version` |
-
-### Kontrol Komutları
-
-```bash
-# Git kontrolü
-if command -v git &> /dev/null; then
-    echo "✅ Git kurulu: $(git --version)"
-else
-    echo "❌ Git kurulu değil!"
-    echo "   Linux/macOS: brew install git veya apt install git"
-    echo "   Windows: https://git-scm.com/download/win"
-fi
-
-# Bun veya Node kontrolü
-if command -v bun &> /dev/null; then
-    echo "✅ Bun kurulu: $(bun --version)"
-elif command -v node &> /dev/null; then
-    echo "✅ Node.js kurulu: $(node --version)"
-else
-    echo "❌ Bun veya Node.js kurulu değil!"
-    echo "   Bun: curl -fsSL https://bun.sh/install | bash"
-    echo "   Node.js: https://nodejs.org/"
-fi
-
-# OpenCode kontrolü
-if command -v opencode &> /dev/null; then
-    echo "✅ OpenCode kurulu: $(opencode --version)"
-else
-    echo "❌ OpenCode kurulu değil!"
-    echo "   Kurulum: https://opencode.ai/docs/tr/"
-fi
-```
 
 ---
 
 ## 🚀 Adım 1: oh-my-openagent Kurulumu
 
-### 1.1 Abonelik Durumu Kontrolü
-
-Kurulumdan önce şu soruları yanıtlayın:
-
-| # | Soru | Yanıt |
-|---|------|-------|
-| 1 | Claude Pro/Max aboneliğin var mı? | evet/hayır |
-| 2 | Varsa, max20 (20x mod) kullanıyor musun? | evet/hayır |
-| 3 | OpenAI/ChatGPT Plus aboneliğin var mı? | evet/hayır |
-| 4 | Gemini modellerini kullanacak mısın? | evet/hayır |
-| 5 | GitHub Copilot aboneliğin var mı? | evet/hayır |
-| 6 | OpenCode Zen (opencode/ modelleri) erişimin var mı? | evet/hayır |
-| 7 | Z.ai Coding Plan aboneliğin var mı? | evet/hayır |
-| 8 | OpenCode Go ($10/ay) aboneliğin var mı? | evet/hayır |
-
-### 1.2 Kurulum Komutları
-
-**Yanıtlara göre kurulum komutu:**
-
-```bash
-# TAM ABONELİK (Tüm native abonelikler)
-bunx oh-my-opencode install --no-tui --claude=max20 --openai=yes --gemini=yes --copilot=no
-
-# SADECE CLAUDE
-bunx oh-my-opencode install --no-tui --claude=yes --gemini=no --copilot=no
-
-# CLAUDE + OPENAI
-bunx oh-my-opencode install --no-tui --claude=yes --openai=yes --gemini=no --copilot=no
-
-# SADECE GITHUB COPILOT
-bunx oh-my-opencode install --no-tui --claude=no --gemini=no --copilot=yes
-
-# Z.AI ABONELİĞİ
-bunx oh-my-opencode install --no-tui --claude=yes --gemini=no --copilot=no --zai-coding-plan=yes
-
-# SADECE OPENCODE ZEN
-bunx oh-my-opencode install --no-tui --claude=no --gemini=no --copilot=no --opencode-zen=yes
-
-# SADECE OPENCODE GO
-bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copilot=no --opencode-go=yes
-
-# HİÇBİR ABONELİK YOK
-bunx oh-my-opencode install --no-tui --claude=no --gemini=no --copilot=no
-```
-
-### 1.3 Alternatif Kurulum (NPX)
-
-```bash
-# NPM ile kurulum
-npx oh-my-opencode install
-```
-
-### 1.4 Kurulum Doğrulama
-
-```bash
-# OpenCode sürümü kontrolü (1.0.150+ olmalı)
-opencode --version
-
-# Plugin'in yüklendiğini kontrol et
-cat ~/.config/opencode/opencode.json
-
-# Bu dosyada "oh-my-opencode" plugin dizisinde görünmeli
-```
+Install and configure oh-my-opencode by following the instructions here:
+https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/refs/heads/dev/docs/guide/installation.md
 
 ---
 
-## 🔑 Adım 2: Sağlayıcı Kimlik Doğrulama
+## 📦 Adım 2: Eğitim Materyalleri Reposunu Kurma
 
-### 2.1 Anthropic (Claude) Kimlik Doğrulama
-
-```bash
-opencode auth login
-# Provider: Anthropic seç
-# Login method: Claude Pro/Max seç
-# Tarayıcıda OAuth akışını tamamla
-```
-
-### 2.2 Google Gemini Kimlik Doğrulama
-
-Gemini için `opencode-antigravity-auth` plugin'i gerekli:
-
-```bash
-# Plugin'i ekle (opencode.json'a)
-# "plugin": ["oh-my-opencode", "opencode-antigravity-auth@latest"]
-
-# Kimlik doğrulama
-opencode auth login
-# Provider: Google seç
-# Login method: OAuth with Google (Antigravity) seç
-```
-
-### 2.3 GitHub Copilot Kimlik Doğrulama
-
-```bash
-opencode auth login
-# Provider: GitHub seç
-# OAuth ile kimlik doğrula
-```
-
----
-
-## 📦 Adım 3: Eğitim Materyalleri Reposunu Kurma
-
-### 3.1 Repository'i Fork Etme
+### 2.1 Repository'i Fork Etme
 
 1. Tarayıcıda şu adrese git: https://github.com/engodenis/OpenCodeConfigDev
 2. Sağ üst köşeden **Fork** butonuna tıkla
 3. Fork ayarlarını tamamla ve **Create fork** butonuna tıkla
 
-### 3.2 Fork'u Klonlama
+### 2.2 Fork'u Klonlama
 
 ```bash
 # Fork URL'ini kendi kullanıcı adınla değiştir
@@ -179,7 +38,7 @@ git clone https://github.com/KULLANICI_ADIN/OpenCodeConfigDev.git
 cd OpenCodeConfigDev
 ```
 
-### 3.3 Upstream Ayarlama (Opsiyonel ama Önerilen)
+### 2.3 Upstream Ayarlama (Opsiyonel ama Önerilen)
 
 ```bash
 # Orijinal repo'yu upstream olarak ekle
@@ -194,9 +53,9 @@ git merge upstream/master
 
 ---
 
-## ⚙️ Adım 4: Konfigürasyon Dosyalarını Yerleştirme
+## ⚙️ Adım 3: Konfigürasyon Dosyalarını Yerleştirme
 
-### 4.1 Optimize Edilmiş Konfigürasyonu Kopyalama
+### 3.1 Optimize Edilmiş Konfigürasyonu Kopyalama
 
 ```bash
 # Windows
@@ -206,7 +65,7 @@ copy opencode_config_dev\oh-my-opencode-optimized.jsonc %USERPROFILE%\.config\op
 cp opencode_config_dev/oh-my-opencode-optimized.jsonc ~/.config/opencode/oh-my-opencode.jsonc
 ```
 
-### 4.2 OpenCode Yapılandırmasını Doğrulama
+### 3.2 OpenCode Yapılandırmasını Doğrulama
 
 ```bash
 # Konfigürasyon dosyalarını kontrol et
@@ -219,9 +78,9 @@ opencode
 
 ---
 
-## ✅ Adım 5: Doğrulama ve İlk Kullanım
+## ✅ Adım 4: Doğrulama ve İlk Kullanım
 
-### 5.1 Kurulum Doğrulama
+### 4.1 Kurulum Doğrulama
 
 OpenCode içinde şu komutları çalıştır:
 
@@ -233,7 +92,7 @@ OpenCode içinde şu komutları çalıştır:
 # opencode.json'da "oh-my-opencode" görünmeli
 ```
 
-### 5.2 İlk Kullanım
+### 4.2 İlk Kullanım
 
 OpenCode içinde:
 
@@ -250,76 +109,21 @@ ulw Add a simple health check endpoint to the project
 
 ---
 
-## 🎯 Hızlı Başlangıç Komutları
+## 🎯 Hızlı Başlangıç
 
-### Tüm Adımları Tek Seferde Çalıştır (Bash Script)
+### Özet
 
-```bash
-#!/bin/bash
-
-# Adım 0: Kontroller
-echo "=== Kontroller ==="
-
-# Git kontrolü
-if ! command -v git &> /dev/null; then
-    echo "❌ Git kurulu değil!"
-    exit 1
-else
-    echo "✅ Git: $(git --version)"
-fi
-
-# Bun veya Node kontrolü
-if command -v bun &> /dev/null; then
-    echo "✅ Bun: $(bun --version)"
-elif command -v node &> /dev/null; then
-    echo "✅ Node: $(node --version)"
-else
-    echo "❌ Bun veya Node.js kurulu değil!"
-    exit 1
-fi
-
-# OpenCode kontrolü
-if ! command -v opencode &> /dev/null; then
-    echo "❌ OpenCode kurulu değil!"
-    echo "   Kurulum: https://opencode.ai/docs/tr/"
-    exit 1
-else
-    echo "✅ OpenCode: $(opencode --version)"
-fi
-
-# Adım 1: oh-my-openagent kurulumu
-echo ""
-echo "=== oh-my-openagent Kurulumu ==="
-echo "Abonelik durumunuza göre kurulum komutunu çalıştırın:"
-echo ""
-echo "Sadece Claude için:"
-echo "  bunx oh-my-opencode install --no-tui --claude=yes --gemini=no --copilot=no"
-echo ""
-echo "Tüm abonelikler için:"
-echo "  bunx oh-my-opencode install --no-tui --claude=max20 --openai=yes --gemini=yes --copilot=no"
-echo ""
-
-# Adım 2: Repo klonlama (örnek)
-echo "=== Repo Kurulumu ==="
-echo "1. https://github.com/engodenis/OpenCodeConfigDev adresine git"
-echo "2. Fork butonuna tıkla"
-echo "3. git clone https://github.com/KULLANICI_ADIN/OpenCodeConfigDev.git"
-echo "4. cd OpenCodeConfigDev"
-echo ""
-
-# Adım 3: Konfigürasyon kopyalama
-echo "=== Konfigürasyon ==="
-echo "cp opencode_config_dev/oh-my-opencode-optimized.jsonc ~/.config/opencode/oh-my-opencode.jsonc"
-echo ""
-
-# Adım 4: Doğrulama
-echo "=== Doğrulama ==="
-echo "opencode --version"
-echo "cat ~/.config/opencode/opencode.json"
-echo ""
-
-echo "Kurulum tamamlandı! 🎉"
-```
+1. **oh-my-openagent kurulumu** için resmi dokümantasyonu takip edin (Adım 1)
+2. **Repo kurulumu:**
+   ```bash
+   git clone https://github.com/KULLANICI_ADIN/OpenCodeConfigDev.git
+   cd OpenCodeConfigDev
+   ```
+3. **Konfigürasyon:**
+   ```bash
+   cp opencode_config_dev/oh-my-opencode-optimized.jsonc ~/.config/opencode/oh-my-opencode.jsonc
+   ```
+4. **Başlat:** `opencode` → `/init`
 
 ---
 
