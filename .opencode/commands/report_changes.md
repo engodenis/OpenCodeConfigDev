@@ -15,6 +15,47 @@ Son yapılan git değişikliklerini analiz et ve sebep-sonuç ilişkisi içinde 
 
 ### 1. Değişiklik Analizi
 - Son commit'ten bu yana değişen dosyaları tespit et
+- **Takip edilmeyen (untracked) dosya ve dizinleri tespit et**
+- Değişiklik türünü belirle (config/feature/bugfix/refactor/docs)
+- Etkilenen sistemleri ve bileşenleri analiz et
+- Breaking change olup olmadığını kontrol et
+
+### 1a. Untracked Dosyaların Yönetimi
+
+Untracked dosyalar git tarafından henüz izlenmeyen, yeni eklenen dosyalardır. Raporlama için önemlidir:
+
+**Tespit Komutu:**
+```bash
+# Sadece untracked dosyaları göster
+git ls-files --others --exclude-standard
+
+# Untracked dizinleri göster
+git status --porcelain | grep "^??"
+```
+
+**Değerlendirme:**
+- [ ] Hangi untracked dosyalar var?
+- [ ] Bu dosyalar rapora dahil edilmeli mi?
+- [ ] Kullanıcıya "Bu dosyaları ekleyeyim mi?" diye sor
+
+**Kullanıcı Seçenekleri:**
+```
+📁 Yeni (Untracked) Dosyalar Tespit Edildi:
+  ?? .opencode/commands/
+  ?? .sisyphus/plans/
+  ?? devs_report/
+
+❓ Bu dosyalar rapora dahil edilsin mi?
+  [1] Evet, tümünü ekle
+  [2] Sadece belirli olanları ekle (seçim yap)
+  [3] Hayır, dışarıda bırak
+  [4] .gitignore'a ekle (takip etme)
+```
+
+**Rapor İçeriği:**
+- Untracked dosyalar ayrı bir bölümde listelenir
+- "Yeni Eklenecek Dosyalar" başlığı altında gösterilir
+- Her dosya için: boyut, tip, içerik özeti
 - Değişiklik türünü belirle (config/feature/bugfix/refactor/docs)
 - Etkilenen sistemleri ve bileşenleri analiz et
 - Breaking change olup olmadığını kontrol et
@@ -148,6 +189,20 @@ Her değişiklik için risk analizi yap:
 | [X] | [Y] | [Z] | [Açıklama] | 🟢/🟡/🔴 |
 ```
 
+### Yeni (Untracked) Dosyalar Tablosu
+```markdown
+| Dosya/Dizin | Tip | Boyut | Açıklama | Rapor Durumu |
+|-------------|-----|-------|----------|--------------|
+| .opencode/ | Config | 15KB | OpenCode komutları | ✅ Dahil edildi |
+| .sisyphus/ | Docs | 8KB | Planlama dosyaları | ✅ Dahil edildi |
+| devs_report/ | Docs | 12KB | Geliştirme raporları | ✅ Dahil edildi |
+```
+
+**Not**: Untracked dosyalar git tarafından henüz izlenmiyor ancak raporda belgelenmelidir.
+
+## 🔍 Analiz Adımları
+```
+
 ## 🔍 Analiz Adımları
 
 1. **Git Log Analizi**
@@ -158,6 +213,26 @@ Her değişiklik için risk analizi yap:
    ```
 
 2. **Dosya İçeriği Analizi**
+   - Değişen dosyaları oku
+   - Config dosyası mı kontrol et
+   - API endpoint değişikliği mi kontrol et
+   - Database migration var mı kontrol et
+
+2a. **Untracked Dosya Analizi**
+   ```bash
+   # Untracked dosyaları listele
+   git ls-files --others --exclude-standard
+   
+   # Untracked dosya detayları
+   git status --porcelain | grep "^??"
+   ```
+   
+   - Her untracked dosyayı incele
+   - İçerik tipini belirle (kaynak kod, config, doküman)
+   - Boyutunu kontrol et (büyük dosyalar için uyarı)
+   - Raporlamaya dahil edilip edilmeyeceğine karar ver
+
+3. **Commit Mesajı Analizi**
    - Değişen dosyaları oku
    - Config dosyası mı kontrol et
    - API endpoint değişikliği mi kontrol et
@@ -252,6 +327,38 @@ Eğer birden fazla commit varsa:
 - Örnek: "Son 3 commit mi analiz edeyim?"
 
 ### Senaryo 3: Değişiklik Yok
+Eğer değişiklik yoksa:
+- "Son commit'ten bu yana değişiklik bulunamadı." mesajı ver
+- Kullanıcıdan commit aralığı veya dosya belirtmesini iste
+
+### Senaryo 4: Sadece Untracked Dosyalar Var
+Eğer commitlenmiş değişiklik yok ama untracked dosyalar varsa:
+
+```
+📁 Untracked Dosyalar Tespit Edildi:
+  ?? .opencode/commands/report_changes.md
+  ?? .opencode/commands/push_repo.md
+  ?? devs_report/opencode-go-optimization.md
+
+💡 Bu dosyalar henüz git tarafından izlenmiyor.
+
+❓ Bu dosyaları rapora dahil edeyim mi?
+  [1] Evet, tüm untracked dosyaları ekle
+  [2] Sadece belirli dosyaları ekle
+  [3] Hayır, rapor oluşturma
+  [4] Önce git add yap, sonra raporla
+
+📝 Not: Untracked dosyalar commit edilmemiş olsa bile 
+geliştirme sürecinin önemli parçasıdır ve dokümante edilmelidir.
+```
+
+**Rapor İçeriği:**
+- "Yeni Oluşturulan Dosyalar" başlığı altında listele
+- Her dosyanın amacını ve içeriğini özetle
+- Git durumunu (untracked) belirt
+- Gelecekte commit edilmesi gerektiğini not düş
+
+## 📚 Referanslar
 Eğer değişiklik yoksa:
 - "Son commit'ten bu yana değişiklik bulunamadı." mesajı ver
 - Kullanıcıdan commit aralığı veya dosya belirtmesini iste
