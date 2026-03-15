@@ -1,58 +1,167 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/dev/assets/oh-my-opencode.schema.json",
   "agents": {
+    "sisyphus": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "ultrawork": {
+        "model": "google/gemini-3.1-pro-preview",
+        "variant": "max"
+      },
+      "temperature": 0.1,
+      "prompt_append": "You are the conductor of an AI development team. Coordinate efficiently, delegate strategically, and ensure every task reaches 100% completion.\n\n## CRITICAL RULES\nWhen modifying opencode_config_dev/oh-my-opencode.json:\n1. Check opencode_config_dev/AGENTS.md for workflow rules\n2. NEVER edit oh-my-opencode.json directly\n3. Make changes to oh-my-opencode-optimized.jsonc first\n4. Test with 'opencode debug config'\n5. Only transfer to oh-my-opencode.json after successful test\n\nSee: opencode_config_dev/AGENTS.md for full workflow."
+    },
+    "hephaestus": {
+      "model": "openai/gpt-5.3-codex",
+      "variant": "medium",
+      "temperature": 0.1,
+      "fallback_models": ["openai/gpt-5.4"],
+      "prompt_append": "You are an autonomous deep worker. Given a goal, explore the codebase thoroughly, research patterns, and execute end-to-end. Think in principles, not recipes."
+    },
     "oracle": {
       "model": "google/gemini-3.1-pro-preview",
-      "variant": "high"
-    },
-    "librarian": {
-      "model": "opencode/glm-4.7-free"
-    },
-    "explore": {
-      "model": "opencode/gpt-5-nano"
-    },
-    "multimodal-looker": {
-      "model": "google/gemini-3-flash-preview"
+      "variant": "high",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      },
+      "prompt_append": "You are a read-only architecture consultant. Analyze deeply, provide reasoning, but never make changes directly."
     },
     "prometheus": {
-      "model": "google/gemini-3.1-pro-preview"
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "high",
+      "temperature": 0.2,
+      "prompt_append": "You are a strategic planner. Interview the user like a senior engineer. Identify scope, ambiguities, and edge cases. Build detailed, verifiable plans."
     },
     "metis": {
       "model": "google/gemini-3.1-pro-preview",
-      "variant": "high"
+      "variant": "high",
+      "temperature": 0.15,
+      "prompt_append": "You are a gap analyzer. Find what the planner missed. Identify hidden assumptions, ambiguities, and potential AI over-engineering."
     },
     "momus": {
       "model": "google/gemini-3.1-pro-preview",
-      "variant": "high"
+      "variant": "high",
+      "temperature": 0.1,
+      "prompt_append": "You are a ruthless plan reviewer. Check: clarity, verifiability, context sufficiency, big picture clarity. Only approve when 100% ready."
     },
     "atlas": {
-      "model": "google/gemini-3.1-pro-preview"
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "medium",
+      "temperature": 0.1,
+      "prompt_append": "You are a task conductor. Execute Prometheus plans systematically. Accumulate wisdom across tasks. Verify completion independently."
+    },
+    "librarian": {
+      "model": "opencode/glm-4.7-free",
+      "temperature": 0.3,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      }
+    },
+    "explore": {
+      "model": "opencode/gpt-5-nano",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "write": "deny"
+      },
+      "prompt_append": "You are a fast codebase explorer. Find patterns, discover implementations, identify conventions. Speed is everything."
+    },
+    "multimodal-looker": {
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.3,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "write": "deny"
+      }
     }
   },
   "categories": {
     "visual-engineering": {
       "model": "google/gemini-3.1-pro-preview",
-      "variant": "high"
+      "variant": "high",
+      "temperature": 0.7,
+      "prompt_append": "You are a designer-turned-developer. Craft stunning UI/UX. Think about aesthetics, accessibility, motion, and user experience. No generic designs."
     },
     "ultrabrain": {
       "model": "google/gemini-3.1-pro-preview",
-      "variant": "high"
+      "variant": "high",
+      "temperature": 0.1,
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 16000
+      },
+      "prompt_append": "You are a strategic thinker. Apply deep logical reasoning. Consider edge cases, trade-offs, and long-term implications. Be thorough."
+    },
+    "deep": {
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "medium",
+      "temperature": 0.2,
+      "prompt_append": "You are an autonomous problem solver. Research thoroughly before action. Understand the codebase deeply. Execute end-to-end."
     },
     "artistry": {
       "model": "google/gemini-3.1-pro-preview",
-      "variant": "high"
+      "variant": "high",
+      "temperature": 0.8,
+      "prompt_append": "You are a creative architect. Think outside conventional patterns. Propose novel approaches. Embrace unconventional solutions."
     },
     "quick": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.2,
+      "prompt_append": "You are a quick fix specialist. Single-file changes, typos, simple modifications. Be fast and precise."
     },
     "unspecified-low": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.3
     },
     "unspecified-high": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "google/gemini-3.1-pro-preview",
+      "variant": "medium",
+      "temperature": 0.2
     },
     "writing": {
-      "model": "google/gemini-3-flash-preview"
+      "model": "google/gemini-3-flash-preview",
+      "temperature": 0.5,
+      "prompt_append": "You are a technical writer. Clear, concise, well-structured documentation. Think about the reader."
+    },
+    "git": {
+      "model": "opencode/gpt-5-nano",
+      "temperature": 0.1,
+      "description": "All git operations - commits, rebases, merges",
+      "prompt_append": "Atomic commits, clear messages, safe operations. Follow the repository's commit convention."
     }
-  }
+  },
+  "background_task": {
+    "defaultConcurrency": 10,
+    "staleTimeoutMs": 180000,
+    "providerConcurrency": {
+      "anthropic": 3,
+      "openai": 5,
+      "google": 10,
+      "opencode": 15,
+      "kimi-for-coding": 5,
+      "zai-coding-plan": 10
+    },
+    "modelConcurrency": {
+      "anthropic/claude-opus-4-6": 2,
+      "openai/gpt-5.4": 3,
+      "google/gemini-3.1-pro-preview": 5,
+      "opencode/gpt-5-nano": 20,
+      "opencode/glm-4.7-free": 30
+    }
+  },
+  "runtime_fallback": {
+    "enabled": true,
+    "retry_on_errors": [400, 429, 503, 529],
+    "max_fallback_attempts": 3,
+    "cooldown_seconds": 60,
+    "timeout_seconds": 30,
+    "notify_on_fallback": true
+  },
+  "hashline_edit": true,
+  "disabled_mcps": []
 }

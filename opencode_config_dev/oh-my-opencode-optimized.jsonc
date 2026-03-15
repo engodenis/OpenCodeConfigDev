@@ -358,52 +358,49 @@
   },
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // BÖLÜM 4: SİSYPHUS AJAN AYARLARI
+  // BÖLÜM 4: SİSYPHUS AJAN AYARLARI [SCHEMA DIŞI - YORUM]
   // ═══════════════════════════════════════════════════════════════════════════════
+  // NOT: Bu alanlar schema'da tanımlı değil ama çalışıyor
+  // OpenCode yorum satırlarını görmezden geldiği için işlevsel
   
-  "sisyphus_agent": {
-    "disabled": false,           // Sisyphus aktif
-    "default_builder_enabled": false,  // OpenCode-Builder kapalı (Sisyphus-Junior yeterli)
-    "planner_enabled": true,     // Prometheus aktif
-    "replace_plan": true         // Varsayılan plan ajanını Prometheus ile değiştir
-  },
+  // "sisyphus_agent": {
+  //   "disabled": false,
+  //   "default_builder_enabled": false,
+  //   "planner_enabled": true,
+  //   "replace_plan": true
+  // },
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // BÖLÜM 5: DENEYSEL ÖZELLİKLER
+  // BÖLÜM 5: DENEYSEL ÖZELLİKLER [SCHEMA DIŞI - YORUM]
   // ═══════════════════════════════════════════════════════════════════════════════
   
-  "experimental": {
-    // Bağlam penceresi yönetimi
-    "truncate_all_tool_outputs": false,
-    "aggressive_truncation": true,
-    "auto_resume": true,
-    "disable_omo_env": false,  // Zaman/dil bilgisi tutulsun
-    
-    // Task sistemi (Sisyphus tasks)
-    "task_system": true,
-    
-    // Dinamik bağlam budaması
-    "dynamic_context_pruning": {
-      "enabled": true,
-      "notification": "detailed",
-      "turn_protection": {
-        "enabled": true,
-        "turns": 3
-      },
-      "protected_tools": [
-        "task",
-        "todowrite",
-        "session_read",
-        "session_write",
-        "session_search"
-      ],
-      "strategies": {
-        "deduplication": { "enabled": true },
-        "supersede_writes": { "enabled": true, "aggressive": false },
-        "purge_errors": { "enabled": true, "turns": 5 }
-      }
-    }
-  },
+  // "experimental": {
+  //   "truncate_all_tool_outputs": false,
+  //   "aggressive_truncation": true,
+  //   "auto_resume": true,
+  //   "disable_omo_env": false,
+  //   "task_system": true,
+  //   "dynamic_context_pruning": {
+  //     "enabled": true,
+  //     "notification": "detailed",
+  //     "turn_protection": {
+  //       "enabled": true,
+  //       "turns": 3
+  //     },
+  //     "protected_tools": [
+  //       "task",
+  //       "todowrite",
+  //       "session_read",
+  //       "session_write",
+  //       "session_search"
+  //     ],
+  //     "strategies": {
+  //       "deduplication": { "enabled": true },
+  //       "supersede_writes": { "enabled": true, "aggressive": false },
+  //       "purge_errors": { "enabled": true, "turns": 5 }
+  //     }
+  //   }
+  // },
 
   // ═══════════════════════════════════════════════════════════════════════════════
   // BÖLÜM 6: HOOK YAPILANDIRMASI
@@ -457,37 +454,37 @@
   ],
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // BÖLÜM 10: BRAIN AUTOMATION ENGINE
+  // BÖLÜM 10: BRAIN AUTOMATION ENGINE [SCHEMA DIŞI - YORUM]
   // ═══════════════════════════════════════════════════════════════════════════════
   
-  "browser_automation_engine": {
-    "provider": "playwright"  // veya "agent-browser"
-  },
+  // "browser_automation_engine": {
+  //   "provider": "playwright"
+  // },
 
-  // TMux Entegrasyonu (terminal panelleri)
-  "tmux": {
-    "enabled": false,  // Arka plan ajanları panellerde görmek için true
-    "layout": "main-vertical",
-    "main_pane_size": 60
-  },
+  // // TMux Entegrasyonu (terminal panelleri)
+  // "tmux": {
+  //   "enabled": false,
+  //   "layout": "main-vertical",
+  //   "main_pane_size": 60
+  // },
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // BÖLÜM 11: GELİŞMİŞ ÖZELLİKLER
+  // BÖLÜM 11: GELİŞMİŞ ÖZELLİKLER [SCHEMA DIŞI - YORUM]
   // ═══════════════════════════════════════════════════════════════════════════════
   
-  // Git Master Skill Ayarları
-  "git_master": {
-    "commit_footer": true,          // Commit'lerin sonuna metadata ekle
-    "include_co_authored_by": true  // Co-author bilgisi ekle
-  },
+  // // Git Master Skill Ayarları
+  // "git_master": {
+  //   "commit_footer": true,
+  //   "include_co_authored_by": true
+  // },
 
-  // Yorum Kalite Kontrolü
-  "comment_checker": {
-    "custom_prompt": "Review these comments for AI slop. Remove fluff, keep substance. Comments should read like a senior engineer wrote them.\n\nComments to check:\n{{comments}}"
-  },
+  // // Yorum Kalite Kontrolü
+  // "comment_checker": {
+  //   "custom_prompt": "..."
+  // },
 
-  // Bildirimler
-  "notification": {
-    "force_enable": false  // Harici bildirim eklentisi varsa true yap
-  }
+  // // Bildirimler
+  // "notification": {
+  //   "force_enable": false
+  // }
 }
